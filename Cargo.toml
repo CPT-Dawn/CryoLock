@@ -1,0 +1,47 @@
+[package]
+name = "cryolock"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+license = "MIT OR Apache-2.0"
+description = "A blazing-fast, secure Wayland session locker for Hyprland and wlroots compositors"
+authors = ["CryoLock Contributors"]
+
+[dependencies]
+# Wayland core + compositor toolkit (includes ext-session-lock-v1 support)
+smithay-client-toolkit = "0.20"
+wayland-client = "0.31"
+wayland-protocols = { version = "0.32", features = ["client", "staging"] }
+wayland-protocols-wlr = { version = "0.3", features = ["client"] }
+
+# Authentication
+pam = "0.8"
+
+# Rendering
+tiny-skia = "0.12"
+fontdue = "0.9"
+
+# Security
+zeroize = { version = "1.8", features = ["derive"] }
+secrecy = "0.10"
+
+# Configuration
+directories = "6.0"
+toml = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+
+# Clock display
+chrono = { version = "0.4", features = ["clock"] }
+
+# System
+libc = "0.2"
+
+# Logging
+log = "0.4"
+env_logger = "0.11"
+
+[profile.release]
+panic = "abort"
+strip = true
+lto = true
+opt-level = "z"

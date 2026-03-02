@@ -1,0 +1,52 @@
+# ╔══════════════════════════════════════════════════════════╗
+# ║             CryoLock — Configuration File               ║
+# ╠══════════════════════════════════════════════════════════╣
+# ║  This file is auto-generated on first launch.           ║
+# ║  Location: ~/.config/cryolock/config.toml               ║
+# ║                                                         ║
+# ║  Edit any value, then re-lock to apply changes.         ║
+# ║  Delete this file to regenerate defaults.               ║
+# ╚══════════════════════════════════════════════════════════╝
+
+# ── Display Power Management (DPMS) ──────────────────────────
+# Seconds of inactivity before monitors power off.
+# Set to 0 to disable DPMS entirely.
+dpms_timeout_seconds = 120
+
+# ── Colors ────────────────────────────────────────────────────
+# All colors are CSS-style hex codes (with or without '#').
+
+# The solid fill behind the lock screen.
+background_color = "#1a1b26"
+
+# The clock and status text color.
+text_color = "#c0caf5"
+
+# ── Ring Indicator ────────────────────────────────────────────
+# The circular password ring changes color to reflect state.
+
+# Idle — no input received yet.
+ring_idle_color = "#565f89"
+
+# Typing — user is entering a password.
+ring_typing_color = "#7aa2f7"
+
+# Wrong — authentication failed.
+ring_wrong_color = "#f7768e"
+
+# ── Typography ────────────────────────────────────────────────
+# Font family name. Must match a font installed on the system
+# (e.g. "monospace", "JetBrains Mono", "Iosevka").
+# CryoLock searches /usr/share/fonts and ~/.local/share/fonts.
+font_family = "monospace"
+
+# Font size in pixels for the clock display.
+font_size = 64
+
+# ── Clock ─────────────────────────────────────────────────────
+# Show the current time centered above the ring indicator.
+show_clock = true
+
+# Time format string (strftime syntax).
+# Examples: "%H:%M" (24h), "%I:%M %p" (12h), "%H:%M:%S"
+clock_format = "%H:%M"
