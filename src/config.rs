@@ -21,7 +21,7 @@ use serde::Deserialize;
 // ---------------------------------------------------------------------------
 
 /// The full contents of the default config file, included verbatim.
-const DEFAULT_CONFIG: &str = include_str!("default_config.toml");
+const DEFAULT_CONFIG: &str = include_str!("../default_config.toml");
 
 // ---------------------------------------------------------------------------
 // Config struct — every field is mandatory with a serde default

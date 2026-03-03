@@ -175,6 +175,16 @@ impl CryoLock {
         let Some(ref session_lock) = self.session_lock else {
             return;
         };
+
+        let output_id = output.id().protocol_id();
+        if self
+            .lock_surfaces
+            .iter()
+            .any(|entry| entry.output.id().protocol_id() == output_id)
+        {
+            return;
+        }
+
         let wl_surface = self.compositor_state.create_surface(qh);
         let lock_surface = session_lock.create_lock_surface(wl_surface, output, qh);
         self.lock_surfaces.push(LockSurfaceEntry {
@@ -190,6 +200,10 @@ impl CryoLock {
         if let Some(ref manager) = self.dpms_manager {
             let power = manager.get_output_power(output, qh, ());
             let id = output.id().protocol_id();
+            if self.dpms_controls.contains_key(&id) {
+                power.destroy();
+                return;
+            }
             self.dpms_controls.insert(id, power);
         }
     }
@@ -208,9 +222,10 @@ impl CryoLock {
 
         // Ensure pool has enough space
         if self.pool.len() < buf_size {
-            self.pool
-                .resize(buf_size)
-                .expect("Failed to resize SHM pool");
+            if let Err(e) = self.pool.resize(buf_size) {
+                error!("Failed to resize SHM pool: {e}");
+                return;
+            }
         }
 
         match self.pool.create_buffer(
@@ -232,9 +247,10 @@ impl CryoLock {
 
                 let entry = &self.lock_surfaces[index];
                 let wl_surface = entry.lock_surface.wl_surface();
-                buffer
-                    .attach_to(wl_surface)
-                    .expect("Failed to attach buffer");
+                if let Err(e) = buffer.attach_to(wl_surface) {
+                    error!("Failed to attach buffer: {e}");
+                    return;
+                }
                 wl_surface.damage_buffer(0, 0, width as i32, height as i32);
                 wl_surface.commit();
             }
@@ -394,9 +410,6 @@ impl SessionLockHandler for CryoLock {
         if let Some(idx) = index {
             self.lock_surfaces[idx].width = w;
             self.lock_surfaces[idx].height = h;
-
-            // Ack the configure before committing.
-            surface.wl_surface().commit(); // ack_configure is implicit via SCTK
 
             // Render and present.
             self.render_frame(idx);
